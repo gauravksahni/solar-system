@@ -3,11 +3,13 @@ pipeline {
 
     tools {
         nodejs 'nodejs244'
+        sonar-scanner 'sonar-scanner'
     }
     environment {
         MONGO_URI = "xxx-xxx-xxx-xxx"
         MONGO_USER = credentials('mongo-creds-username')
         MONGO_PASSWORD = credentials('mongo-creds-password')
+        SONAR_TOKEN = credentials('sonar-solar-system-token')
     }
 
     stages{
@@ -54,6 +56,18 @@ pipeline {
                 catchError(buildResult: 'SUCCESS', message: 'OOPS. will be fixed in next release', stageResult: 'UNSTABLE') {
                     sh 'npm run coverage'
                 }
+            }
+        }
+
+        stage('SAST Sonarqube'){
+            steps {
+                sh '''
+                    sonar-scanner \
+                    -Dsonar.projectKey=solar-system \
+                    -Dsonar.sources=. \
+                    -Dsonar.host.url=http://192.168.59.121:9000 \
+                    -Dsonar.token=${SONAR_TOKEN}
+                '''
             }
         }
     }
