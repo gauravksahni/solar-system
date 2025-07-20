@@ -3,7 +3,6 @@ pipeline {
 
     tools {
         nodejs 'nodejs244'
-        sonarscanner 'sonar-scanner'
     }
     environment {
         MONGO_URI = "xxx-xxx-xxx-xxx"
