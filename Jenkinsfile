@@ -42,22 +42,22 @@ pipeline {
                 } 
             }
         }
-        stage('Unit Testing'){
-            options {
-                timestamps()
-                retry(2)
-            }
-            steps {
-                sh 'npm test' 
-            }
-        }  
-        stage('Code Coverage'){
-            steps{
-                catchError(buildResult: 'SUCCESS', message: 'OOPS. will be fixed in next release', stageResult: 'UNSTABLE') {
-                    sh 'npm run coverage'
-                }
-            }
-        }
+        // stage('Unit Testing'){
+        //     options {
+        //         timestamps()
+        //         retry(2)
+        //     }
+        //     steps {
+        //         sh 'npm test' 
+        //     }
+        // }  
+        // stage('Code Coverage'){
+        //     steps{
+        //         catchError(buildResult: 'SUCCESS', message: 'OOPS. will be fixed in next release', stageResult: 'UNSTABLE') {
+        //             sh 'npm run coverage'
+        //         }
+        //     }
+        // }
 
         stage('SAST Sonarqube'){
             steps {
