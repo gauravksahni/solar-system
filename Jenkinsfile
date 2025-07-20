@@ -10,6 +10,7 @@ pipeline {
         MONGO_PASSWORD = credentials('mongo-creds-password')
         SONAR_TOKEN = credentials('sonar-solar-system-token')
         SCANNER_HOME = tool 'sonar-scanner';
+        SONAR_SCANNER_OPTS = '-Xmx1024m'
     }
 
     stages{
