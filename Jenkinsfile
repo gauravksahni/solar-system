@@ -6,6 +6,8 @@ pipeline {
     }
     environment {
         MONGO_URI = "xxx-xxx-xxx-xxx"
+        MONGO_USER = credentials('mongo-creds-password')
+        MONGO_PASSWORD = credentials('mongo-creds-password')
     }
 
     stages{
@@ -34,38 +36,37 @@ pipeline {
                             --prettyPrint''', odcInstallation: 'OWASP'
 
                         dependencyCheckPublisher failedTotalCritical: 1, pattern: 'dependency-check-report.xml', stopBuild: true
-
-                        junit allowEmptyResults: true, keepProperties: true, testResults: 'dependency-check-junit.xml'
-
-                        publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: './', reportFiles: 'dependency-check-report.html', reportName: 'Dependency Check HTML Report', reportTitles: '', useWrapperFileDirectly: true])
                     }
                 } 
             }
         }
-        // stage('Unit Testing'){
-        //     options {
-        //         timestamps()
-        //         retry(2)
-        //     }
-        //     steps {
-                
-        //         withCredentials([usernamePassword(credentialsId: 'mongo-db-credentials', passwordVariable: 'MONGO_PASSWORD', usernameVariable: 'MONGO_USER')]) {
-        //             sh 'npm test'
-        //         }
-        //         junit allowEmptyResults: true, keepProperties: true, testResults: 'test-report.xml'  
-        //     }
-        // }  
+        stage('Unit Testing'){
+            options {
+                timestamps()
+                retry(2)
+            }
+            steps {
+                sh 'npm test' 
+            }
+        }  
         stage('Code Coverage'){
             steps{
-                withCredentials([usernamePassword(credentialsId: 'mongo-db-credentials', passwordVariable: 'MONGO_PASSWORD', usernameVariable: 'MONGO_USER')]) {
-                    catchError(buildResult: 'SUCCESS', message: 'OOPS. will be fixed in next release', stageResult: 'UNSTABLE') {
-                        sh 'npm run coverage'
-                    }
+                catchError(buildResult: 'SUCCESS', message: 'OOPS. will be fixed in next release', stageResult: 'UNSTABLE') {
+                    sh 'npm run coverage'
                 }
+            }
+        }
+        post {
+            always {
+                junit allowEmptyResults: true, keepProperties: true, testResults: 'dependency-check-junit.xml'
+
+                publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: './', reportFiles: 'dependency-check-report.html', reportName: 'Dependency Check HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+
+                junit allowEmptyResults: true, keepProperties: true, testResults: 'test-report.xml'
+
                 publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: 'coverage/lcov-report', reportFiles: 'index.html', reportName: 'Code Coverage HTML Report', reportTitles: '', useWrapperFileDirectly: true])
 
             }
         }
-
     }
 }
