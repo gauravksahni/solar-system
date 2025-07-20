@@ -32,10 +32,15 @@ pipeline {
                         dependencyCheckPublisher failedTotalCritical: 1, pattern: 'dependency-check-report.xml', stopBuild: true
 
                         junit allowEmptyResults: true, keepProperties: true, testResults: 'dependency-check-junit.xml'
-                        
+
                         publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: './', reportFiles: 'dependency-check-report.html', reportName: 'Dependency Check HTML Report', reportTitles: '', useWrapperFileDirectly: true])
                     }
                 } 
+            }
+        }
+        stage('Unit Testing'){
+            steps {
+                sh 'npm test'
             }
         }  
     }
