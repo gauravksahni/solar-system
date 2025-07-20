@@ -6,7 +6,7 @@ pipeline {
     }
     environment {
         MONGO_URI = "xxx-xxx-xxx-xxx"
-        MONGO_USER = credentials('mongo-creds-password')
+        MONGO_USER = credentials('mongo-creds-username')
         MONGO_PASSWORD = credentials('mongo-creds-password')
     }
 
@@ -56,17 +56,16 @@ pipeline {
                 }
             }
         }
-        post {
-            always {
-                junit allowEmptyResults: true, keepProperties: true, testResults: 'dependency-check-junit.xml'
+    }
+    post {
+        always {
+            junit allowEmptyResults: true, keepProperties: true, testResults: 'dependency-check-junit.xml'
 
-                publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: './', reportFiles: 'dependency-check-report.html', reportName: 'Dependency Check HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+            publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: './', reportFiles: 'dependency-check-report.html', reportName: 'Dependency Check HTML Report', reportTitles: '', useWrapperFileDirectly: true])
 
-                junit allowEmptyResults: true, keepProperties: true, testResults: 'test-report.xml'
+            junit allowEmptyResults: true, keepProperties: true, testResults: 'test-report.xml'
 
-                publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: 'coverage/lcov-report', reportFiles: 'index.html', reportName: 'Code Coverage HTML Report', reportTitles: '', useWrapperFileDirectly: true])
-
-            }
+            publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: 'coverage/lcov-report', reportFiles: 'index.html', reportName: 'Code Coverage HTML Report', reportTitles: '', useWrapperFileDirectly: true])
         }
     }
 }
