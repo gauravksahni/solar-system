@@ -51,13 +51,13 @@ pipeline {
         //         sh 'npm test' 
         //     }
         // }  
-        // stage('Code Coverage'){
-        //     steps{
-        //         catchError(buildResult: 'SUCCESS', message: 'OOPS. will be fixed in next release', stageResult: 'UNSTABLE') {
-        //             sh 'npm run coverage'
-        //         }
-        //     }
-        // }
+        stage('Code Coverage'){
+            steps{
+                catchError(buildResult: 'SUCCESS', message: 'OOPS. will be fixed in next release', stageResult: 'UNSTABLE') {
+                    sh 'npm run coverage'
+                }
+            }
+        }
 
         stage('SAST Sonarqube'){
             steps {
