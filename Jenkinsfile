@@ -64,12 +64,18 @@ pipeline {
 
         stage('SAST Sonarqube') {
             steps {
-                withSonarQubeEnv('sonarqube') {
+                withEnv([
+                    "SCANNER_HOME=${tool 'sonar-scanner'}",
+                    "SONAR_SCANNER_JAVA_OPTS=-Xmx4096m"
+                ]) {
                     sh """
-                        $SCANNER_HOME/bin/sonar-scanner \
-                        -Dsonar.projectKey=solar-system \
-                        -Dsonar.sources=apps.js \
-                        -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info
+                        \$SCANNER_HOME/bin/sonar-scanner \\
+                        -Dsonar.projectKey=solar-system \\
+                        -Dsonar.sources=app.js \\
+                        -Dsonar.host.url=http://192.168.59.121:9000 \\
+                        -Dsonar.token=${SONAR_TOKEN} \\
+                        -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info \\
+                        -Dsonar.exclusions=**/node_modules/**,**/build/**,**/dist/**,**/*.min.js
                     """
                 }
             }
