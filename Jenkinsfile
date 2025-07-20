@@ -10,6 +10,7 @@ pipeline {
         MONGO_PASSWORD = credentials('mongo-creds-password')
         SONAR_TOKEN = credentials('sonar-solar-system-token')
         SCANNER_HOME = tool 'sonar-scanner';
+        SONAR_SCANNER_OPTS = '-Xmx1024m'
     }
 
     stages{
@@ -51,13 +52,13 @@ pipeline {
         //         sh 'npm test' 
         //     }
         // }  
-        // stage('Code Coverage'){
-        //     steps{
-        //         catchError(buildResult: 'SUCCESS', message: 'OOPS. will be fixed in next release', stageResult: 'UNSTABLE') {
-        //             sh 'npm run coverage'
-        //         }
-        //     }
-        // }
+        stage('Code Coverage'){
+            steps{
+                catchError(buildResult: 'SUCCESS', message: 'OOPS. will be fixed in next release', stageResult: 'UNSTABLE') {
+                    sh 'npm run coverage'
+                }
+            }
+        }
 
         stage('SAST Sonarqube'){
             steps {
