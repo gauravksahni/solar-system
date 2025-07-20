@@ -4,6 +4,10 @@ pipeline {
     tools {
         nodejs 'nodejs244'
     }
+    environment {
+        MONGO_URI = "xxx-xxx-xxx-xxx"
+    }
+
     stages{
 
         stage('Install dependencies'){
@@ -39,8 +43,16 @@ pipeline {
             }
         }
         stage('Unit Testing'){
+            options {
+                timestamps()
+                 retry(2)
+            }
             steps {
-                sh 'npm test'
+                
+                withCredentials([usernamePassword(credentialsId: 'mongo-db-credentials', passwordVariable: 'MONGO_PASSWORD', usernameVariable: 'MONGO_USER')]) {
+                    sh 'npm test'
+                }
+                junit allowEmptyResults: true, keepProperties: true, testResults: 'test-report.xml'  
             }
         }  
     }
