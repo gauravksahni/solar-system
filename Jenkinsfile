@@ -60,15 +60,20 @@ pipeline {
             }
         }
 
-        stage('SAST Sonarqube'){
+        stage('SAST Sonarqube') {
             steps {
-                sh '''
-                    $SCANNER_HOME/bin/sonar-scanner \
-                    -Dsonar.projectKey=solar-system \
-                    -Dsonar.sources=. \
-                    -Dsonar.host.url=http://192.168.59.121:9000 \
-                    -Dsonar.token=${SONAR_TOKEN}
-                '''
+                withEnv([
+                    "SCANNER_HOME=${tool 'sonar-scanner'}",
+                    "SONAR_SCANNER_OPTS=-Xmx2048m"
+                ]) {
+                    sh '''
+                        $SCANNER_HOME/bin/sonar-scanner \
+                        -Dsonar.projectKey=solar-system \
+                        -Dsonar.sources=. \
+                        -Dsonar.host.url=http://192.168.59.121:9000 \
+                        -Dsonar.token=${SONAR_TOKEN}
+                    '''
+                }
             }
         }
     }
