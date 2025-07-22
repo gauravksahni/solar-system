@@ -37,6 +37,7 @@ pipeline {
                             --scan \'./\' 
                             --out \'./\'  
                             --format \'ALL\' 
+                            --disableYarnAudit \
                             --prettyPrint''', odcInstallation: 'OWASP'
 
                         dependencyCheckPublisher failedTotalCritical: 1, pattern: 'dependency-check-report.xml', stopBuild: true
@@ -71,6 +72,13 @@ pipeline {
                         -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info 
                     """
                 }
+            }
+        }
+        stage("Quality Gate") {
+            steps {
+              timeout(time: 1, unit: 'HOURS') {
+                waitForQualityGate abortPipeline: true
+              }
             }
         }
     }
