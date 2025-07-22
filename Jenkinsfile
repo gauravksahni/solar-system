@@ -65,10 +65,10 @@ pipeline {
             steps {
                 withSonarQubeEnv('snarqube-server') {
                     sh """
-                     $SCANNER_HOME/bin/sonar-scanner \
-                    -Dsonar.projectKey=solar-system \
-                    -Dsonar.sources=app.js \
-                    -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info 
+                        $SCANNER_HOME/bin/sonar-scanner \
+                        -Dsonar.projectKey=solar-system \
+                        -Dsonar.sources=app.js \
+                        -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info 
                     """
                 }
             }
