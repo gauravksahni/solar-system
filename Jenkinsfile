@@ -11,7 +11,6 @@ pipeline {
         MONGO_URI = "xxx-xxx-xxx-xxx"
         MONGO_USER = credentials('mongo-creds-username')
         MONGO_PASSWORD = credentials('mongo-creds-password')
-        SONAR_TOKEN = credentials('sonar-solar-system-token')
         SCANNER_HOME = tool 'sonar-scanner';
     }
 
