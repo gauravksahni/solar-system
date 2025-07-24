@@ -71,7 +71,11 @@ pipeline {
                         -Dsonar.sources=app.js \
                         -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info 
                     """
-                }
+                } 
+            }
+        }
+        stage('Quality Gate') {
+            steps{
                 timeout(time: 60, unit: 'SECONDS') {
                     waitForQualityGate abortPipeline: true
                 }
