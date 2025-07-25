@@ -83,7 +83,7 @@ pipeline {
         }
         stage('Build Docker image'){
             steps{
-                sh 'docker build -t gauravkb/solar-system:$GIT_COMMIT .'
+                sh """docker build -t gauravkb/solar-system:${GIT_COMMIT} ."""
             }
         }
 
