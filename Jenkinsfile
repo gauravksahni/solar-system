@@ -100,14 +100,14 @@ pipeline {
             post {
                 always {
                     sh '''
-                    trivy convert \
-                        --format template --template "@/usr/local/share/trivy/templates/html.tpl" \ 
-                        --output trivy-image-CRITICAL-result.html trivy-image-CRITICAL-result.json
+                        trivy convert \
+                            --format template --template "@/usr/local/share/trivy/templates/html.tpl" \ 
+                            --output trivy-image-CRITICAL-result.html trivy-image-CRITICAL-result.json
 
-                    trivy convert \
-                        --format template --template "@/usr/local/share/trivy/templates/junit.tpl" \ 
-                        --output trivy-image-CRITICAL-result.xml trivy-image-CRITICAL-result.json
-                    '''
+                        trivy convert \
+                            --format template --template "@/usr/local/share/trivy/templates/junit.tpl" \ 
+                            --output trivy-image-CRITICAL-result.xml trivy-image-CRITICAL-result.json
+                        '''
                 }
             }
         }
