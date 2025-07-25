@@ -116,6 +116,14 @@ pipeline {
                 }
             }
         }
+
+        stage('Push to Docker image'){
+            steps{
+                withDockerRegistry(credentialsId: 'docker-credentials', url: '') {
+                    sh """docker push gauravkb/solar-system:${GIT_COMMIT}"""
+                }
+            }
+        }
     }
     post {
         always {
