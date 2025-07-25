@@ -86,6 +86,33 @@ pipeline {
                 sh 'docker build -t gauravkb/solar-system:$GIT_COMMIT .'
             }
         }
+
+        stage('Trivy Vulnerability Scan') {
+            steps {
+                sh '''                    
+                    trivy image gauravkb/solar-system:$GIT_COMMIT \
+                        --quiet \
+                        --severity CRITICAL \
+                        --exit-code 1 \
+                        --format json -o  trivy-image-CRITICAL-result.json
+                '''
+            }
+            post {
+                always {
+                    sh '''
+                    trivy convert \
+                        --format template --template "@/usr/local/share/trivy/templates/html.tpl" \ 
+                        --output trivy-image-CRITICAL-result.html trivy-image-CRITICAL-result.json
+
+                    trivy convert \
+                        --format template --template "@/usr/local/share/trivy/templates/junit.tpl" \ 
+                        --output trivy-image-CRITICAL-result.xml trivy-image-CRITICAL-result.json
+                    '''
+                }
+            }
+        }
+
+
     }
     post {
         always {
@@ -96,6 +123,12 @@ pipeline {
             junit allowEmptyResults: true, keepProperties: true, testResults: 'test-report.xml'
 
             publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: 'coverage/lcov-report', reportFiles: 'index.html', reportName: 'Code Coverage HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+
+            junit allowEmptyResults: true, keepProperties: true, testResults: 'trivy-image-CRITICAL-result.xml'
+
+            publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, icon: '', keepAll: true, reportDir: './', reportFiles: 'trivy-image-CRITICAL-result.html', reportName: 'Trivy Image Scan Report', reportTitles: '', useWrapperFileDirectly: true])
+
+
         }
     }
 }
