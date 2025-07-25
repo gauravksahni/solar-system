@@ -81,6 +81,15 @@ pipeline {
                 }
             }
         }
+        stage('Build Docker image'){
+            steps {
+                sh """
+                printenv
+                docker build -t gauravkb/solar-system:$GIT_COMMIT_SHORT .
+                "'"
+            }
+
+        }
     }
     post {
         always {
